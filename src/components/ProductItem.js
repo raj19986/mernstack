@@ -20,8 +20,10 @@ export default class ProductItem extends React.Component {
 		let qty = cart[id] + parseInt(this.state.quantity);
 		if (this.props.product.available_quantity < qty) {
 			cart[id] = this.props.product.available_quantity; 
+			console.log("add to cart: if part: " + cart[id] )
 		} else {
 			cart[id] = qty
+			console.log("add to cart: else part: " + cart[id] )
 		}
 		localStorage.setItem( localStorage.getItem('activeuserId'), JSON.stringify(cart));
 	}
@@ -33,7 +35,7 @@ export default class ProductItem extends React.Component {
 		    <div className="card" style={{ marginBottom: "10px"}}>
 			  <div className="card-body">
 			    <h4 className="card-title">{product.name}</h4>
-				<img src="https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=450" />
+				<img src={product.imageUrl}/*"https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=350&w=450"*/ />
 			    <p className="card-text">{product.description}</p>
 			    <h5 className="card-text"><small>price: </small>${product.price}</h5>
 			    <span className="card-text"><small>Available Quantity: </small>{product.available_quantity}</span>

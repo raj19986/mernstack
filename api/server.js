@@ -32,19 +32,40 @@ app.get('/api/products', async (req, res) => {
 });
 
 app.post('/api/products', async (req, res) => {
-
+  console.log('server called /api/products')
   const dbproducts = await Product.find({})
 
   let products = [], id = null;
+  
   let cart = JSON.parse(req.body.cart);
-  if (!cart) return res.json(products)
+  if (!cart){
+    console.log('Server side error return')
+    return res.json(products)
+  } 
+  let cnt = 0
   for (var i = 0; i < dbproducts.length; i++) {
     id = dbproducts[i].id.toString();
     if (cart.hasOwnProperty(id)) {
       dbproducts[i].qty = cart[id]
-      products.push(dbproducts[i]);
+      //data.products[i].qty = cart[id]
+      /* const jjproduct = []
+       jjproduct.qty =  cart[id]
+       jjproduct.id = dbproducts[i].id
+       jjproduct.name=dbproducts[i].name
+       jjproduct.price=dbproducts[i].price
+       jjproduct.available_quantity=dbproducts[i].available_quantity
+       jjproduct.imgUrl=dbproducts[i].imgUrl
+       jjproduct.description=dbproducts[i].description
+*/
+      console.log("server side id: " +id +  "db:  " +  dbproducts[i].qty +"cart[id]: " +cart[id] )
+      products.push(dbproducts[i])//dbproducts[i]);
+      //products[cnt].qty =cart[id]
+      cnt++
     }
   }
+  console.log("server side products[0].price: " +products[0].price + ' products[0].qty ' +products[0].qty )
+  //console.log("server side products[1].price: " +products[1].price + ' products[1].qty ' +products[1].qty )
+
   return res.json(products);
 });
 

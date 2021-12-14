@@ -18,9 +18,12 @@ export default class Cart extends React.Component {
 		if (!cart) return; 
 		console.log('lafda maadi: '+ localStorage.getItem('activeuserId'))
 		getCartProducts(cart).then((products) => {
+			console.log("result of post api: products[0].price: " +products[0].price + " products[0].qty " +products[0].qty )
 			let total = 0;
 			for (var i = 0; i < products.length; i++) {
 				total += products[i].price * products[i].qty;
+				console.log('pRICE LAFDA MAAAADI qty: '+ products[i].qty + products[i].price )
+
 			}
 	    	this.setState({ products, total });
 	    });
