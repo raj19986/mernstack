@@ -12,6 +12,7 @@ const data = require('./data');
 const middleware = require('./middleware');
 
 const Product = require('./Product')
+const User = require('./User')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -47,10 +48,15 @@ app.post('/api/products', async (req, res) => {
   return res.json(products);
 });
 
-app.post('/api/auth', (req,res) => {
-  let user = data.users.filter((user) => {
+app.post('/api/auth', async (req,res) => {
+  //const user = await User.find({'name':req.body.name})
+  const user = await User.find({name:req.body.name})
+  if(( user.name == req.body.name && user.password == req.body.password))
     return user.name == req.body.name && user.password == req.body.password;
-  });
+
+  /*let user = data.users.filter((user) => {
+    return user.name == req.body.name && user.password == req.body.password;
+  });*/
   if (user.length){
       // create a token using user name and password vaild for 2 hours
       let token_payload = {name: user[0].name, password: user[0].password};
