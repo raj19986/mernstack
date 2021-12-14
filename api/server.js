@@ -1,4 +1,7 @@
 'use strict';
+require('dotenv').config()
+const connectDB = require('./db')
+connectDB()
 
 const express = require('express');
 const app = express();
@@ -8,23 +11,37 @@ const bodyParser = require('body-parser');
 const data = require('./data');
 const middleware = require('./middleware');
 
+const Product = require('./Product')
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 
-app.get('/api/products', (req, res) => {
-  return res.json(data.products);
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find({})
+
+    res.json(products)
+} catch (error) {
+    console.error(error)
+    res.status(500).json({message: "Server Error"})
+}
+
+  /*return res.json(data.products);*/
 });
 
-app.post('/api/products', (req, res) => {
+app.post('/api/products', async (req, res) => {
+
+  const dbproducts = await Product.find({})
+
   let products = [], id = null;
   let cart = JSON.parse(req.body.cart);
   if (!cart) return res.json(products)
-  for (var i = 0; i < data.products.length; i++) {
-    id = data.products[i].id.toString();
+  for (var i = 0; i < dbproducts.length; i++) {
+    id = dbproducts[i].id.toString();
     if (cart.hasOwnProperty(id)) {
-      data.products[i].qty = cart[id]
-      products.push(data.products[i]);
+      dbproducts[i].qty = cart[id]
+      products.push(dbproducts[i]);
     }
   }
   return res.json(products);
