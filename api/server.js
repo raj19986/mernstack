@@ -8,8 +8,7 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const data = require('./data');
-const middleware = require('./middleware');
+
 
 const Product = require('./Product')
 const User = require('./User')
@@ -31,6 +30,7 @@ app.get('/api/products', async (req, res) => {
   /*return res.json(data.products);*/
 });
 
+// To list products in a cart of user with username
 app.post('/api/products', async (req, res) => {
   console.log('server called /api/products')
   const dbproducts = await Product.find({})
@@ -71,24 +71,30 @@ app.post('/api/products', async (req, res) => {
 
 app.post('/api/auth', async (req,res) => {
   //const user = await User.find({'name':req.body.name})
+  const popo = await Product.find({name:"CHECK PRINT SHIRT"})
+  console.log("popo print: " + popo.length + ' name: ' + popo[0].name)
   const user = await User.find({name:req.body.name})
-  if(( user.name == req.body.name && user.password == req.body.password))
-    return user.name == req.body.name && user.password == req.body.password;
+  console.log('aaaaaaaaaayyyyyyooooooooooooo')
+  //console.log('username match: ' + user[0].name + ' req.name: ' + req.body.name)
 
-  /*let user = data.users.filter((user) => {
-    return user.name == req.body.name && user.password == req.body.password;
-  });*/
+  if(!user.length)
+   {
+     //console.log('username match: ' + user[0].name + ' req.name: ' + req.body.name + ' pwd match: ' + user[0].password == req.body.password)
+    return res.status("409").json("Authentication failed.")//!(user[0].name == req.body.name && user[0].password == req.body.password);
+   }
+
+  
   if (user.length){
-      // create a token using user name and password vaild for 2 hours
+      console.log('ajsfgsagfULGSLIFGUGFILGUSFGIUASGfuisagFLUIGSALUIgfuasGFULIGAIUGSUILGV IUCASGviugsapigvugvuigsuiagv ui  g')
       let token_payload = {name: user[0].name, password: user[0].password};
       let token = jwt.sign(token_payload, "jwt_secret_password", { expiresIn: '2h' });
       let response = { message: 'Token Created, Authentication Successful!', token: token };
 
-      // return the information including token as JSON
+      
       return res.status(200).json(response);
 
   } else {
-      return res.status("409").json("Authentication failed. admin not found.");
+      return res.status("409").json("Authentication failed.");
   }
 });
 
